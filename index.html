@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4eddf">
+  <meta name="description" content="9×9の小さな絵日記を、誰かの今日と静かに交換するアプリ。">
+  <title>ぽつぽつ日記 | 9×9で、今日を交換する絵日記</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand-button" id="brand-button" type="button" aria-label="今日画面へ戻る">
+        <span class="logo-grid" id="logo-grid" aria-hidden="true"></span>
+        <span class="brand-copy">
+          <strong>ぽつぽつ日記</strong>
+          <small>9×9で、今日を交換する絵日記</small>
+        </span>
+      </button>
+      <button class="settings-button" id="settings-button" type="button" aria-label="設定（準備中）">
+        <span class="settings-pixels" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+    </header>
+
+    <main class="app-main">
+      <section class="screen is-active" id="today-screen" data-screen="today" aria-labelledby="today-title">
+        <div class="today-topline">
+          <div>
+            <p class="section-code">TODAY / 81 DOTS</p>
+            <h1 id="today-title">今日のひとこま</h1>
+            <p class="today-date"><span class="status-dot" aria-hidden="true"></span><span id="today-date"></span></p>
+          </div>
+          <span class="save-status" id="today-save-status">まだ描いていません</span>
+        </div>
+
+        <article class="paper-card today-diary">
+          <span class="paper-tape" aria-hidden="true"></span>
+          <div class="pixel-frame pixel-frame--today">
+            <div class="pixel-grid today-preview" id="today-preview" aria-label="今日の9×9絵日記"></div>
+          </div>
+          <div class="tag-row tag-row--center" id="today-tags" aria-label="今日のタグ"></div>
+          <p class="empty-copy" id="today-empty-copy">小さな今日を、81マスに残してみましょう。</p>
+        </article>
+
+        <div class="primary-actions">
+          <button class="pixel-button pixel-button--ink" id="today-draw-button" type="button">
+            <span class="button-pixels" aria-hidden="true"></span>
+            絵日記を描く
+          </button>
+          <button class="pixel-button pixel-button--clay" id="today-exchange-button" type="button">
+            <span class="mini-envelope" aria-hidden="true"></span>
+            今日を交換する
+          </button>
+        </div>
+
+        <div class="exchange-counter">
+          <span>今日の交換</span>
+          <strong>あと <b id="today-exchange-left">3</b> 回</strong>
+          <span class="counter-pips" id="today-counter-pips" aria-hidden="true"></span>
+        </div>
+      </section>
+
+      <section class="screen" id="draw-screen" data-screen="draw" aria-labelledby="draw-title" hidden>
+        <div class="title-row title-row--compact">
+          <div>
+            <p class="section-code">DRAW / 9×9</p>
+            <h1 id="draw-title">今日を描く</h1>
+          </div>
+          <span class="square-label">81 MASU</span>
+        </div>
+        <p class="screen-lead">うまく描かなくて大丈夫。指先で、今日の色を置いていきます。</p>
+
+        <div class="canvas-board">
+          <span class="corner-pixel corner-pixel--top" aria-hidden="true"></span>
+          <span class="corner-pixel corner-pixel--bottom" aria-hidden="true"></span>
+          <div class="pixel-grid editor-grid" id="editor-grid" role="grid" aria-label="9×9ドット絵キャンバス"></div>
+        </div>
+
+        <section class="drawing-panel" aria-labelledby="palette-title">
+          <div class="panel-heading">
+            <h2 id="palette-title">いろを選ぶ</h2>
+            <label class="color-picker-label">
+              <span>好きないろ</span>
+              <input id="custom-color" type="color" value="#ce6b55" aria-label="好きな色を選ぶ">
+            </label>
+          </div>
+          <div class="palette" id="palette" aria-label="カラーパレット"></div>
+        </section>
+
+        <div class="tool-grid" aria-label="描画ツール">
+          <button class="tool-button" id="undo-button" type="button" disabled>
+            <span class="tool-symbol" aria-hidden="true">↶</span><span>ひとつ戻る</span>
+          </button>
+          <button class="tool-button" id="redo-button" type="button" disabled>
+            <span class="tool-symbol" aria-hidden="true">↷</span><span>ひとつ進む</span>
+          </button>
+          <button class="tool-button" id="eraser-button" type="button" aria-pressed="false">
+            <span class="eraser-symbol" aria-hidden="true"></span><span>消しゴム</span>
+          </button>
+          <button class="tool-button" id="eyedropper-button" type="button" aria-pressed="false">
+            <span class="eyedropper-symbol" aria-hidden="true"></span><span>スポイト</span>
+          </button>
+          <button class="tool-button" id="clear-button" type="button">
+            <span class="clear-symbol" aria-hidden="true">×</span><span>全消し</span>
+          </button>
+        </div>
+
+        <button class="pixel-button pixel-button--ink full-button" id="go-tags-button" type="button">この絵を保存して、タグへ</button>
+      </section>
+
+      <section class="screen" id="tags-screen" data-screen="tags" aria-labelledby="tags-title" hidden>
+        <button class="text-back-button" id="tags-back-button" type="button"><span aria-hidden="true">←</span> 絵にもどる</button>
+        <div class="tag-page-heading">
+          <div class="mini-preview-frame">
+            <div class="pixel-grid mini-preview" id="tag-preview" aria-label="保存する9×9絵日記"></div>
+          </div>
+          <div>
+            <p class="section-code">TAG YOUR DAY</p>
+            <h1 id="tags-title">今日に、しるしを。</h1>
+            <p>ことばは3つまで。近いものを選んでください。</p>
+          </div>
+        </div>
+
+        <div class="tag-selection-card">
+          <div class="tag-count-row">
+            <span>今日のタグ</span>
+            <strong><b id="selected-tag-count">0</b> / 3</strong>
+          </div>
+          <div class="tag-picker" id="tag-picker" aria-label="今日のタグを種類から選ぶ"></div>
+        </div>
+        <p class="tag-hint" id="tag-hint">選ばなくても保存できます。</p>
+        <button class="pixel-button pixel-button--clay full-button" id="final-save-button" type="button">今日の日記として保存</button>
+      </section>
+
+      <section class="screen" id="exchange-screen" data-screen="exchange" aria-labelledby="exchange-title" hidden>
+        <div class="title-row title-row--compact">
+          <div>
+            <p class="section-code">QUIET EXCHANGE</p>
+            <h1 id="exchange-title">今日を交換する</h1>
+          </div>
+          <span class="square-label">3 / DAY</span>
+        </div>
+        <p class="screen-lead">どこかで今日を描いた誰かと、絵日記を一枚ずつ交換します。</p>
+
+        <div class="exchange-stage">
+          <div class="exchange-illustration" aria-hidden="true">
+            <span class="desk-paper desk-paper--one"></span>
+            <span class="desk-paper desk-paper--two"></span>
+            <span class="large-envelope"><i></i></span>
+            <span class="floating-square floating-square--one"></span>
+            <span class="floating-square floating-square--two"></span>
+          </div>
+          <div class="exchange-ready">
+            <div class="exchange-preview-frame">
+              <div class="pixel-grid exchange-preview" id="exchange-preview" aria-label="交換する今日の絵日記"></div>
+            </div>
+            <h2 id="exchange-ready-title">まず今日の絵日記を描いてください</h2>
+            <p id="exchange-ready-copy">描いた一枚だけが、今日の交換券です。</p>
+            <button class="pixel-button pixel-button--clay full-button" id="exchange-main-button" type="button">絵日記を描く</button>
+          </div>
+        </div>
+
+        <div class="exchange-limit-card">
+          <span>本日の交換</span>
+          <strong>あと <b id="exchange-left">3</b> 回</strong>
+          <div class="limit-meter" id="exchange-meter" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="screen waiting-screen" id="waiting-screen" data-screen="waiting" aria-labelledby="waiting-title" hidden>
+        <div class="swap-scene" id="swap-scene" aria-hidden="true">
+          <div class="swap-diary swap-diary--outgoing">
+            <div class="pixel-grid swap-preview" id="waiting-outgoing-preview"></div>
+            <span>あなたの今日</span>
+          </div>
+          <span class="swap-envelope"><i></i><b></b></span>
+          <div class="swap-diary swap-diary--incoming">
+            <div class="pixel-grid swap-preview" id="waiting-incoming-preview"></div>
+            <span>誰かの今日</span>
+          </div>
+          <span class="swap-track" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <p class="section-code">EXCHANGING...</p>
+        <h1 id="waiting-title">今日を一枚ずつ<br>交換しています</h1>
+        <p class="waiting-message" id="waiting-message">あなたの絵日記を封筒へ入れています</p>
+        <div class="loading-dots" aria-label="交換中"><i></i><i></i><i></i></div>
+        <p class="waiting-note">小さな一日が、静かに行き違います。</p>
+      </section>
+
+      <section class="screen" id="result-screen" data-screen="result" aria-labelledby="result-title" hidden>
+        <div class="result-heading">
+          <span class="arrival-mark" aria-hidden="true">＋</span>
+          <p class="section-code">A DAY ARRIVED</p>
+          <h1 id="result-title">誰かの今日が<br>届きました</h1>
+        </div>
+
+        <article class="received-diary">
+          <div class="post-stamp" aria-hidden="true">9×9<br>DAY</div>
+          <div class="pixel-frame pixel-frame--result">
+            <div class="pixel-grid result-preview" id="result-preview" aria-label="届いた9×9絵日記"></div>
+          </div>
+          <div class="tag-row tag-row--center" id="result-diary-tags" aria-label="届いた絵日記のタグ"></div>
+          <div class="sender-line">
+            <span class="pixel-avatar" id="result-avatar" aria-hidden="true"></span>
+            <div>
+              <small>FROM</small>
+              <h2 id="result-name"></h2>
+            </div>
+          </div>
+          <div class="profile-tags" id="result-profile-tags" aria-label="届いた人の自己紹介タグ"></div>
+        </article>
+
+        <div class="result-actions">
+          <button class="pixel-button pixel-button--clay full-button" id="keep-partner-button" type="button">また交換したい</button>
+          <button class="pixel-button pixel-button--paper full-button" id="finish-button" type="button">今日はここまで</button>
+        </div>
+      </section>
+
+      <section class="screen" id="records-screen" data-screen="records" aria-labelledby="records-title" hidden>
+        <div class="title-row title-row--compact">
+          <div>
+            <p class="section-code">MY LITTLE ARCHIVE</p>
+            <h1 id="records-title">絵日記の記録</h1>
+          </div>
+          <span class="square-label"><b id="record-count">0</b> DAYS</span>
+        </div>
+        <div class="record-filter">
+          <label for="record-date-filter">日付でしぼる</label>
+          <div class="record-filter-controls">
+            <input id="record-date-filter" type="date">
+            <button id="record-filter-clear" type="button">条件を解除</button>
+          </div>
+          <p id="record-filter-status">すべての記録</p>
+        </div>
+        <div class="notebook-rule" aria-hidden="true"><span></span></div>
+        <div class="record-list" id="record-list"></div>
+        <div class="empty-state" id="record-empty" hidden>
+          <span class="empty-grid" aria-hidden="true"></span>
+          <p>まだ記録はありません。<br>今日の81マスから始めましょう。</p>
+        </div>
+      </section>
+
+      <section class="screen" id="friends-screen" data-screen="friends" aria-labelledby="friends-title" hidden>
+        <div class="title-row title-row--compact">
+          <div>
+            <p class="section-code">DIARY PARTNERS</p>
+            <h1 id="friends-title">相手</h1>
+          </div>
+          <span class="square-label"><b id="friend-count">0</b> 人</span>
+        </div>
+        <div class="friend-list" id="friend-list"></div>
+        <div class="empty-state" id="friend-empty" hidden>
+          <span class="empty-envelope" aria-hidden="true"></span>
+          <p>交換を続ける人ができると、<br>ここに作品が並びます。</p>
+        </div>
+      </section>
+
+      <section class="screen" id="detail-screen" data-screen="detail" aria-labelledby="detail-title" hidden>
+        <button class="text-back-button" id="detail-back-button" type="button"><span aria-hidden="true">←</span> 一覧にもどる</button>
+        <div class="detail-heading">
+          <p class="section-code" id="detail-kicker">DIARY DETAIL</p>
+          <h1 id="detail-title">絵日記</h1>
+          <p id="detail-subtitle"></p>
+        </div>
+        <article class="detail-card">
+          <div class="pixel-frame pixel-frame--detail">
+            <div class="pixel-grid detail-preview" id="detail-preview" aria-label="9×9絵日記の詳細"></div>
+          </div>
+          <div class="tag-row tag-row--center" id="detail-tags"></div>
+          <div class="detail-friend" id="detail-friend" hidden>
+            <span class="pixel-avatar" id="detail-avatar" aria-hidden="true"></span>
+            <div>
+              <small>PARTNER</small>
+              <h2 id="detail-friend-name"></h2>
+              <div class="profile-tags" id="detail-profile-tags"></div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="メインナビゲーション">
+      <button class="nav-item is-active" type="button" data-target="today" aria-current="page">
+        <span class="nav-icon nav-icon--today" aria-hidden="true"><i></i></span><span>今日</span>
+      </button>
+      <button class="nav-item" type="button" data-target="draw">
+        <span class="nav-icon nav-icon--draw" aria-hidden="true"><i></i></span><span>描く</span>
+      </button>
+      <button class="nav-item" type="button" data-target="exchange">
+        <span class="nav-icon nav-icon--exchange" aria-hidden="true"><i></i></span><span>交換</span>
+      </button>
+      <button class="nav-item" type="button" data-target="records">
+        <span class="nav-icon nav-icon--records" aria-hidden="true"><i></i></span><span>記録</span>
+      </button>
+      <button class="nav-item" type="button" data-target="friends">
+        <span class="nav-icon nav-icon--partners" aria-hidden="true"><i></i></span><span>相手</span>
+      </button>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
